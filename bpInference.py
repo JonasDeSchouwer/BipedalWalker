@@ -31,7 +31,7 @@ num_observations = env.observation_space.shape[0]
 num_actions = env.action_space.shape[0]
 
 net = bpPNet(num_observations, num_actions)
-net.load(r"tasks\22.01.20-21.51_long_from_scratch\pNet")
+net.load(r"tasks\22.01.24-17.59_continue_training\pNet")
 net.to(DEVICE)
 net.eval()
 
@@ -75,7 +75,7 @@ def main():
         while not done:
             env.render()
             if not paused:
-                action = net.select_action(torch.as_tensor(observation, device=DEVICE), sigma=1).cpu().detach()
+                action = net.select_action(torch.as_tensor(observation, device=DEVICE), sigma=0.1).cpu().detach()
                 observation, reward, done, _ = env.step(action)
                 time.sleep(0.01)
             if want_to_exit:

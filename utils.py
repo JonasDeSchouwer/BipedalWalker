@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import torch
 import logging
+import pickle
 
 
 # device
@@ -37,6 +40,25 @@ class Memory:
         else:
             return self.star[index]
     
+
+    def save(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self, f)
+    
+    @staticmethod
+    def load(path: str) -> Memory:
+        with open(path, 'rb') as f:
+            return pickle.load(f)
+
+    def save_stars(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self.get_stars(), f)
+    
+    def load_stars(self, path, num_stars):
+        with open(path, 'rb') as f:
+            self.add_stars(pickle.load(f)[:num_stars])
+
+
     def get_stars(self):
         return self.star[:self.length]
 
@@ -62,6 +84,10 @@ class Memory:
     def add_star(self, star):
         self.star[self.length] = torch.as_tensor(star, device=DEVICE)
         self.length += 1
+    
+    def add_stars(self, stars):
+        self.star[self.length : self.length+len(stars)] = torch.as_tensor(stars, device=DEVICE)
+        self.length += len(stars)
     
     def remove_first_states(self, n):
         self.star = torch.roll(self.star, shifts=-n, dims=0)
@@ -161,4 +187,3 @@ class OrnsteinUhlenbeck:
     def step(self):
         self.value = (1-self.theta)*self.value + torch.normal(0, std=self.sigma, size=self.shape, device=DEVICE)
         return self.value
-

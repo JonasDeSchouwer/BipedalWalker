@@ -72,7 +72,7 @@ class bpPNet(torch.nn.Module):
         self.fcl2 = nn.Linear(100,50)
         self.fcl3 = nn.Linear(50,num_actions)
 
-        self.noise_scheduler = OrnsteinUhlenbeck(theta=0.1, sigma=0.1, shape=(num_actions,))
+        self.noise_scheduler = OrnsteinUhlenbeck(theta=0.15, sigma=0.2, shape=(num_actions,))
 
     def forward(self, obs):
         """
